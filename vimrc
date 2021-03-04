@@ -131,6 +131,9 @@ Plug 'vim-airline/vim-airline-themes'
 Plug 'neoclide/coc.nvim'
 Plug 'morhetz/gruvbox'
 Plug 'mtdl9/vim-log-highlighting'
+Plug 'Yggdroot/LeaderF', { 'do': ':LeaderfInstallCExtension' }
+Plug 'luochen1990/rainbow'
+Plug 'jackguo380/vim-lsp-cxx-highlight'
 
 call plug#end()
 
@@ -176,11 +179,12 @@ function! s:check_back_space() abort
 endfunction
 
 " Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+"if has('nvim')
+"  inoremap <silent><expr> <c-space> coc#refresh()
+"else
+"  inoremap <silent><expr> <c-@> coc#refresh()
+"endif
+inoremap <silent><expr> <c-p> coc#refresh()
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
@@ -280,9 +284,12 @@ command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organize
 " provide custom statusline: lightline.vim, vim-airline.
 set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
+" Get all diagnostics of current buffer in location list
+nnoremap <silent><nowait> <space>d  :<C-u>CocDiagnostics<cr>
+
 " Mappings for CoCList
 " Show all diagnostics.
-nnoremap <silent><nowait> <space>a  :<C-u>CocList diagnostics<cr>
+nnoremap <silent><nowait> <space>da  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
 nnoremap <silent><nowait> <space>e  :<C-u>CocList extensions<cr>
 " Show commands.
@@ -297,3 +304,57 @@ nnoremap <silent><nowait> <space>j  :<C-u>CocNext<CR>
 nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
+
+"autocmd FileType java let b:coc_root_patterns = ['.git', '.env', 'build.xml']
+
+
+
+" LeaderF
+let g:Lf_HideHelp = 0
+let g:Lf_UseCache = 0
+let g:Lf_UseVersionControlTool = 0
+let g:Lf_IgnoreCurrentBufferName = 1
+" popup mode
+let g:Lf_WindowPosition = 'popup'
+let g:Lf_PreviewInPopup = 1
+let g:Lf_StlSeparator = { 'left': "\ue0b0", 'right': "\ue0b2", 'font':"DejaVu Sans Mono for Powerline" }
+let g:Lf_PreviewResult = {'Function': 0, 'BufTag': 0 }
+let g:Lf_PreviewCode = 1
+
+" Show icons, icons are shown by default
+let g:Lf_ShowDevIcons = 1
+" For GUI vim, the icon font can be specify like this, for example
+let g:Lf_DevIconsFont = "DroidSansMono Nerd Font Mono"
+" If needs
+set ambiwidth=double
+
+let g:Lf_ShortcutF = "<leader>ff"
+noremap <leader>fb :<C-U><C-R>=printf("Leaderf buffer %s", "")<CR><CR>
+noremap <leader>fm :<C-U><C-R>=printf("Leaderf mru %s", "")<CR><CR>
+noremap <leader>ft :<C-U><C-R>=printf("Leaderf bufTag %s", "")<CR><CR>
+noremap <leader>fl :<C-U><C-R>=printf("Leaderf line %s", "")<CR><CR>
+noremap <leader>fu :<C-U><C-R>=printf("Leaderf function %s", "")<CR><CR>
+noremap <leader>fh :<C-U><C-R>=printf("Leaderf cmdHistory %s", "")<CR><CR>
+noremap <leader>fj :<C-U><C-R>=printf("Leaderf jumps %s", "")<CR><CR>
+noremap <leader>fs :<C-U><C-R>=printf("Leaderf searchHistory %s", "")<CR><CR>
+noremap <leader>fq :<C-U><C-R>=printf("Leaderf quickfix %s", "")<CR><CR>
+
+noremap <C-B> :<C-U><C-R>=printf("Leaderf! rg --current-buffer -e %s ", expand("<cword>"))<CR>
+noremap <C-F> :<C-U><C-R>=printf("Leaderf! rg -e %s ", expand("<cword>"))<CR>
+" search visually selected text literally
+xnoremap gf :<C-U><C-R>=printf("Leaderf! rg -F -e %s ", leaderf#Rg#visual())<CR>
+noremap go :<C-U>Leaderf! rg --recall<CR>
+
+" should use `Leaderf gtags --update` first
+let g:Lf_GtagsAutoGenerate = 0
+let g:Lf_Gtagslabel = 'native-pygments'
+noremap <leader>fr :<C-U><C-R>=printf("Leaderf! gtags -r %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fd :<C-U><C-R>=printf("Leaderf! gtags -d %s --auto-jump", expand("<cword>"))<CR><CR>
+noremap <leader>fo :<C-U><C-R>=printf("Leaderf! gtags --recall %s","")<CR><CR>
+noremap <leader>fn :<C-U><C-R>=printf("Leaderf gtags --next %s", "")<CR><CR>
+noremap <leader>fp :<C-U><C-R>=printf("Leaderf gtags --previous %s","")<CR><CR>
+
+
+" Rainbow
+let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
+
